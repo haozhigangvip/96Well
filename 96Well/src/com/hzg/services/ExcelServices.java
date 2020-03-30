@@ -170,7 +170,7 @@ public class ExcelServices {
 		
 		// TODO Auto-generated method stub
 		
-		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/")+"template.xlsx");
+		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/download")+"/template.xlsx");
 
 		String rowxl="abcdefghijklmnopqrstuvwxyz";
 		XSSFSheet sheet=book.getSheet("sheet1");
