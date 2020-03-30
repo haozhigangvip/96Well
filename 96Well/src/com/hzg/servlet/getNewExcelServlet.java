@@ -64,7 +64,13 @@ public class getNewExcelServlet extends HttpServlet {
 				
 				HttpSession session=request.getSession();
 				
-				String cookstr="{\"prows\":"+xls.getRows()+",\"pcols\":"+xls.getCols()+"}";
+				String cookstr="{\"prows\":"+xls.getRows()+
+						",\"pcols\":"+xls.getCols()+
+						",\"margin_left\":"+xls.getMargin_left()+
+						",\"margin_right\":"+xls.getMargin_right()+
+						",\"margin_top\":"+xls.getMargin_top()+
+						",\"margin_butto\":"+xls.getMargin_butto()+
+						"}";
 				
 				Cookie ck=new Cookie("96wellCookie", cookstr);
 				ck.setMaxAge(31104000);
