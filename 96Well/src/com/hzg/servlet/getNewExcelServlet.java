@@ -10,9 +10,13 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -57,8 +61,18 @@ public class getNewExcelServlet extends HttpServlet {
 
 			}else
 			{
+				
+				HttpSession session=request.getSession();
+				
+				String cookstr="{\"prows\":"+xls.getRows()+",\"pcols\":"+xls.getCols()+"}";
+				
+				Cookie ck=new Cookie("96wellCookie", cookstr);
+				ck.setMaxAge(31104000);
+				ck.setPath(request.getContextPath()+"/");
+				response.addCookie(ck);
+				
+				
 				String newfile=Excel.toExcel(request,xls);
-		
 				ServletContext con=this.getServletContext();
 				message="status: 1,url:\""+request.getContextPath()+"/download/"+newfile+"\"";
 				//message="true";

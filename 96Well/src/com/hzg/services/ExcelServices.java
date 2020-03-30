@@ -154,13 +154,15 @@ public class ExcelServices {
 			e.printStackTrace();
 			return null;
 		}
-		xls.setPlates(rds);
+		
 		xls.setCols(pcols);
 		xls.setRows(prows);
 		xls.setMargin_butto(margin_butto);
 		xls.setMargin_top(margin_top);
 		xls.setMargin_left(margin_left);
 		xls.setMargin_right(margin_right);
+		
+		xls.setPlates(rds);
 		return xls;
 		
 		
