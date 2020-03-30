@@ -301,7 +301,7 @@ function ajaxFileUpload(){
 				error: function(data,e) {
 					$("#loading").hide();    
 					valid = false;
-					dispAlert('系统错误:'+e+"，请联系管理员","");
+					dispAlert("系统错误:"+ e +"，请联系管理员","");
 
 				}
 			})

@@ -6,8 +6,8 @@
 				document.getElementById('zhezhao').style.display="block";
 				$("#contentHref").on("click",function(){
 					if(curl!=null && curl!=""){
-					
-					window.location.href=${pageContext.request.contextPath }+curl;
+					var nurl=curl;
+					window.location.href=nurl;
 					hiddAlert();}
 				});	
 			}
