@@ -135,17 +135,23 @@ public class ExcelServices {
 						//浣跨敤FileOutputStream杈撳嚭娴佸皢缂撳啿鍖虹殑鏁版嵁鍐欏叆鍒版寚瀹氱殑鐩綍(savePath + "\\" + filename)褰撲腑
 						out.write(buffer, 0, len);
 					}
+					String ff=savePath+"\\"+newfile+lfilename;					
 					out.flush();
-					//鍏抽棴杈撳叆娴�
+					rds=new ExcelUtils().excelToList(ff);
+					
 					in.close();
-					//鍏抽棴杈撳嚭娴�
+				
 					out.close();
-					//鍒犻櫎澶勭悊鏂囦欢涓婁紶鏃剁敓鎴愮殑涓存椂鏂囦欢
+					
 					item.delete();
 					
-
-					rds=new ExcelUtils().excelToList(savePath+"\\"+newfile+lfilename);;
+					//开启多线程，删除文件；
+					 Thread thread = new FileDelete(ff);
+					 thread.start();
+					
+					
 			
+					
 					
 					
 				}

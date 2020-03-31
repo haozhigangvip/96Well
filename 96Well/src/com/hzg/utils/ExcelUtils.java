@@ -59,7 +59,12 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 	if(book!=null){
 		sheet=book.getSheet("list");
 		if(sheet==null){
-
+			try {
+				book.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return null;
 			
 		}
@@ -85,6 +90,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 	}
 	try {
 		book.close();
+	
 	} catch (IOException e) {
 		// TODO 自动生成的 catch 块
 		e.printStackTrace();
