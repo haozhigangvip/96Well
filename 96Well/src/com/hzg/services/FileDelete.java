@@ -10,7 +10,7 @@ public class FileDelete extends Thread {
 	public void run(){
 		File ff= new File(filepath);
 		while(ff.exists()){
-			System.out.println("文件删除："+ff.delete());
+			ff.delete();
 		}
 		
 	}

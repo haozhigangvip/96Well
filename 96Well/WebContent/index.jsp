@@ -325,7 +325,7 @@ function ajaxFileUpload(){
 
 
 <script type="text/javascript">
-//读取cookie
+//读取cookie 设置
 $(function(){
 
 	if($.cookie("96wellCookie")!=null){
