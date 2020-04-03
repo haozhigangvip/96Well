@@ -1,3 +1,4 @@
+ 
 package com.hzg.utils;
 
 
@@ -44,6 +45,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 	try {
 		
 
+		
 		book=WorkbookFactory.create(new FileInputStream(new File(filePath)));
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
@@ -186,6 +188,8 @@ public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int
 	
 	
 		font.setFontHeightInPoints((short)(fontSize));
+		font.setFontName("Arial");	
+		style.setWrapText(true);
 		if(fontBold!=0){
 		font.setBold(true);
 		}

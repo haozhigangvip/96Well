@@ -181,7 +181,7 @@ public class ExcelServices {
 		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/download")+"/template.xlsx");
 
 		String rowxl="abcdefghijklmnopqrstuvwxyz";
-		XSSFSheet sheet=book.getSheet("sheet1");
+		XSSFSheet sheet=book.getSheetAt(0);
 		XSSFRow row=null;
 		XSSFRow row1=null;
 		XSSFRow trow=null;
@@ -195,13 +195,15 @@ public class ExcelServices {
 		int ncol=1;
 		int nrow=0;
 		int inrow=0;
-		int btrow=13;
+		int btrow=11;
 		int rounds=0;
 		XSSFFont fonta =book.createFont();
 		XSSFFont fontb =book.createFont();
 		XSSFFont fontc =book.createFont();
 		XSSFFont fontd =book.createFont();
-
+		XSSFFont fonte =book.createFont();
+		XSSFFont fontf =book.createFont();
+		
 		Boolean nomarg=false;
 		List<plate> list=xls.getPlates();
 		
@@ -227,8 +229,11 @@ public class ExcelServices {
 				
 				nrow=btrow+rnd*(rows*2+2)+rr;
 				trow=sheet.createRow(nrow);
-				trow.setHeight((short) (28.5*20));
-
+				if((rr-2)%2==0){
+				trow.setHeight((short) (24*20));
+				}else{
+					trow.setHeight((short) (27.75*20));
+				}
 
 				for(int cc=0;cc<cols+1;cc++){
 					nomarg=false;
@@ -281,8 +286,8 @@ public class ExcelServices {
 										listn++;
 
 								}
-								
-								sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,sjbStyle,7,2 ,(short)0,0,8));}
+	
+								sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjbStyle,7,2 ,(short)0,0,7));}
 							//设置列边距
 							if(cc<=lmar ||cc>=cols-rmar+1){
 								tcell.setCellValue("Empty");
