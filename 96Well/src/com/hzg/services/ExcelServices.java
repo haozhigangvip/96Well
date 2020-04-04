@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -179,7 +180,7 @@ public class ExcelServices {
 		// TODO Auto-generated method stub
 		
 		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/download")+"/template.xlsx");
-
+   
 		String rowxl="abcdefghijklmnopqrstuvwxyz";
 		XSSFSheet sheet=book.getSheetAt(0);
 		XSSFRow row=null;
@@ -195,15 +196,21 @@ public class ExcelServices {
 		int ncol=1;
 		int nrow=0;
 		int inrow=0;
-		int btrow=11;
+		int btrow=11;//标题行
 		int rounds=0;
+		int topjjrow=1;//上行行间距行
+		int bottojjrow=1;//下行间距行
+		int jrr=topjjrow+2;
 		XSSFFont fonta =book.createFont();
 		XSSFFont fontb =book.createFont();
 		XSSFFont fontc =book.createFont();
 		XSSFFont fontd =book.createFont();
 		XSSFFont fonte =book.createFont();
 		XSSFFont fontf =book.createFont();
+		XSSFCellStyle empty_cs=(sheet.getRow(11).getCell(0).getCellStyle());
+		XSSFCellStyle data_cs=(sheet.getRow(11).getCell(1).getCellStyle());
 		
+		short EMPYT_BGK=64;
 		Boolean nomarg=false;
 		List<plate> list=xls.getPlates();
 		
@@ -217,19 +224,33 @@ public class ExcelServices {
 		}
 		
 		XSSFCellStyle bqStyle=book.createCellStyle();
+		XSSFCellStyle bq1Style=book.createCellStyle();
 		XSSFCellStyle btaStyle=book.createCellStyle();
 		XSSFCellStyle btbStyle=book.createCellStyle();
-		XSSFCellStyle sjaStyle=book.createCellStyle();
+		XSSFCellStyle sjaStyle=(XSSFCellStyle)data_cs.clone();
 		XSSFCellStyle sjbStyle=book.createCellStyle();
+		XSSFCellStyle sjcStyle=(XSSFCellStyle)data_cs.clone();
+		XSSFCellStyle sjdStyle=book.createCellStyle();
+		XSSFCellStyle sjeStyle=(XSSFCellStyle)data_cs.clone();
+		XSSFCellStyle sjfStyle=book.createCellStyle();
+		XSSFCellStyle sjgStyle=(XSSFCellStyle)data_cs.clone();
+		XSSFCellStyle sjhStyle=book.createCellStyle();
 		XSSFCellStyle rowbtStyle=book.createCellStyle();
-		XSSFCellStyle emptyStyle=book.createCellStyle();
+		XSSFCellStyle emptyaStyle=(XSSFCellStyle)empty_cs.clone();
+		XSSFCellStyle emptycStyle=(XSSFCellStyle)empty_cs.clone();
+		XSSFCellStyle emptybStyle=(XSSFCellStyle)empty_cs.clone();
+		XSSFCellStyle emptydStyle=(XSSFCellStyle)empty_cs.clone();
+		XSSFCellStyle emptyeStyle=(XSSFCellStyle)empty_cs.clone();
+		
 
 		for (int rnd=0;rnd<rounds;rnd++){
-			for(int rr=0;rr<(rows+1)*2;rr++){
+			for(int rr=0;rr<(rows+1)*2+1;rr++){
 				
-				nrow=btrow+rnd*(rows*2+2)+rr;
+				nrow=btrow+rnd*(rows*2+jrr+bottojjrow)+rr;
+		
 				trow=sheet.createRow(nrow);
-				if((rr-2)%2==0){
+				
+				if((rr-jrr)%2==0){
 				trow.setHeight((short) (24*20));
 				}else{
 					trow.setHeight((short) (27.75*20));
@@ -240,43 +261,56 @@ public class ExcelServices {
 					tcell=trow.createCell(cc);
 					if(rr==0){	
 						//设置Plate layout
-						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,2,0 ,(short)0,1,12));
-						tcell.setCellValue("Plate layout:"+list.get(listn).getPlate());
+						if(topjjrow>0){
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,0,0 ,1,12));
+						}else
+						{
+							System.out.println("dddd");
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,2,0 ,1,12));
 						}
-					
-					if(rr==1){	
 						
+						
+						tcell.setCellValue("Plate layout:"+list.get(listn).getPlate());
+						trow.setHeight((short) (13.5*20));
+						}
+					if(rr==topjjrow && topjjrow>0){
+						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bq1Style,2,0 ,1,12));
+					}
+					if(rr==topjjrow+1){	
+						//设置列标题行高
+						trow.setHeight((short) (19.5*20));
 						if(cc>0){
 							//设置列标题
 							tcell.setCellValue(cc);
+							
 						}
+						
 						//设置列标题边距及格式
 						if(cc<cols){
 						 //前几列
-						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btaStyle,0,1 ,(short)0,1,10));
+						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btaStyle,0,2 ,1,10));
 						}
 						else
 						{
 						 //最后列
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btbStyle,4,1 ,(short)0,1,10));
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btbStyle,4,2 ,1,10));
 						}
 					}
-					if(rr>1){
-						//设置行标题
+					
+					if(rr>topjjrow+1){
+						//设置行标题	
 						if(cc==0){
-							if((rr-2)%2==0){
-							tcell.setCellValue(rowxl.substring((rr-2)/2, (rr-2)/2+1));
-							sheet.addMergedRegion(new CellRangeAddress(nrow,nrow+1,0,0));
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, rowbtStyle,0,2 ,(short)0,1,10));
+							if((rr-jrr)%2==0){
 							
+							sheet.addMergedRegion(new CellRangeAddress(nrow,nrow+1,0,0));
+							tcell.setCellValue(rowxl.substring((rr-jrr)/2, (rr-jrr)/2+1));
 							}
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, rowbtStyle,4,2 ,1,10));
 						 
 						}else{
 							
-								if((rr-2)%2==0){
-									sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontc,sjaStyle,6,2 ,(short)0,1,8));
-								}else{
-									if(cc>lmar && cc<cols-rmar+1 && rr-2>tmar*2 && rr-2<(rows)*2-bmar*2 && listn<list.size()){
+								if((rr-jrr)%2>0 && (rr-jrr>=tmar*2+1) && rr-jrr<(rows)*2-bmar*2){
+									if(cc>lmar && cc<cols-rmar+1 && listn<list.size()){
 										//填充CAS
 										sheet.getRow(nrow-1).getCell(cc).setCellValue(list.get(listn).getCAS()); 
 										
@@ -284,32 +318,112 @@ public class ExcelServices {
 										sheet.getRow(nrow).getCell(cc).setCellValue(list.get(listn).getCompound());
 										
 										listn++;
-
+									}
+								if(cc<cols-rmar||rmar==0){
+								//CAS格式
+									if(rr-jrr==(tmar)*2+1 && tmar>0){
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjeStyle,10,2 ,1,8));
+									}else
+									{
+										
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjaStyle,6,2 ,1,8));
+									}	
+								
+								//Compund格式
+								  if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
+									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjfStyle,11,2 ,0,7));
+								  }else
+								  {
+								   sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjbStyle,7,2 ,0,7));
+								  }
 								}
-	
-								sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjbStyle,7,2 ,(short)0,0,7));}
+								else
+								{
+								
+								
+								    //CAS格式
+									if(rr-jrr==(tmar)*2+1 && tmar>0){
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjgStyle,14,2 ,1,8));
+									}else{
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjcStyle,1,2 ,1,8));
+									}
+								
+									
+									//Compund格式
+									 if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
+										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjhStyle,15,2 ,0,7));
+									 }else
+									 {
+										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjdStyle,2,2 ,0,7));
+									 }
+									
+								}
+								}
+								
 							//设置列边距
 							if(cc<=lmar ||cc>=cols-rmar+1){
+								//设置边距列宽
+								sheet.setColumnWidth(cc, (int)8.38*252+323);
 								tcell.setCellValue("Empty");
-								 if((rr-2)%2>0 ){
+								
+								
+								 if((rr-jrr)%2>0 ){
 								 
 									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
-									 
-									 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyStyle,5,2 , IndexedColors.LIGHT_TURQUOISE.getIndex(),0,8));
+									 //设置列边距格式
+									 if((cc==lmar  )){
+										
+										 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
+										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
+									 }else if(cc==cols-rmar+1){
+										
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 , 0,8));
+										sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 ,0,8));
+									 }else
+									 {
 									
+										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
+										sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
+									 }
+									 
+									 
 									 nomarg=true;
+								
 								 }
 								
+							}else{
+								//设置数据列宽
+								sheet.setColumnWidth(cc, 11*252+323);
 							}
+							
+							
 							//设置行边距
-							if(rr-2<tmar*2||rr-2>=(rows)*2-bmar*2){
+							if(rr-jrr<tmar*2||rr-jrr>=(rows)*2-bmar*2){
 								 tcell.setCellValue("Empty");
-								 if((rr-2)%2>0){
+								 if((rr-jrr)%2>0){
 									 if(nomarg==false){
 									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
 									 }
-									 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyStyle,5,2 , IndexedColors.LIGHT_TURQUOISE.getIndex(),0,8));
-									
+									 
+									 //设置行边距格式
+									  if(rr-jrr<=tmar*2-1||rr-jrr>=(rows)*2-bmar*2+1){
+									  if(rr-jrr==(rows)*2-bmar*2+1 && bmar>0){
+									   sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptydStyle,13,2 ,0,8));
+									  }else
+									  {
+								      sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 , 0,8));
+									  }
+								      if(rr-jrr==tmar*2-1 && tmar>0){
+										  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyeStyle,12,2 ,0,8));
+									  }else
+									  { 
+										  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
+									  }
+								    
+									 
+										 
+									  }
+									 
 								 }
 							 }
 						}
@@ -318,6 +432,13 @@ public class ExcelServices {
 				if(rr==0){
 					sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
 				}
+				if(topjjrow>0 && rr>=topjjrow &rr<=topjjrow){
+					sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
+					
+					trow.setHeight((short) (12.75*20));
+				}
+				
+					
 			}
 			
 		}

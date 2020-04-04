@@ -125,10 +125,11 @@ public XSSFWorkbook getXLSXBook(String filePath ){
 }
 
 @SuppressWarnings( "deprecation" )
-public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int Center,short backGroundColor,int fontBold,int fontSize){
-	
+public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int Center,int fontBold,int fontSize){
+
 	switch (Border) {
 	case 0:
+		
 	break;
 	case 1:
 		style.setBorderTop(CellStyle.BORDER_THIN);
@@ -150,17 +151,52 @@ public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int
 		break;
 	case 6:
 		style.setBorderTop(CellStyle.BORDER_THIN);
-
-		style.setBorderLeft(CellStyle.BORDER_THIN);
 		style.setBorderRight(CellStyle.BORDER_THIN);
 		break;	
 	case 7:
-		
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		break;
+	case 8:
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_DASHED);
+		break;
+	case 9:
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_DASHED);	
+		break;
+	case 10:
+		style.setBorderTop(CellStyle.BORDER_DASHED);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		break;
+
+	case 11:
+		style.setBorderBottom(CellStyle.BORDER_DASHED);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+
+		break;
+	case 12:
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		break;
+	case 13:
 		style.setBorderBottom(CellStyle.BORDER_THIN);
 		style.setBorderLeft(CellStyle.BORDER_THIN);
 		style.setBorderRight(CellStyle.BORDER_THIN);
 		break;
+	case 14:
 
+		style.setBorderTop(CellStyle.BORDER_DASHED);
+		break;
+	case 15:
+		
+		style.setBorderBottom(CellStyle.BORDER_DASHED);
+		break;
 	default:
 		break;
 	}
@@ -181,10 +217,6 @@ public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int
 		break;
 	}
 	
-	if(backGroundColor!=0){
-	style.setFillForegroundColor(backGroundColor);
-	style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-	}
 	
 	
 		font.setFontHeightInPoints((short)(fontSize));
