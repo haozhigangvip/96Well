@@ -54,6 +54,7 @@ public class getNewExcelServlet extends HttpServlet {
 			list = upload.parseRequest(request);
 	
 			inExcel xls=Excel.readExcel(list,savePath);		
+			
 			//writer.flush();
 			if(xls==null||xls.isReadError()){
 				message="status: 0";

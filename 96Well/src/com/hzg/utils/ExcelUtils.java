@@ -20,11 +20,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.util.Removal;
+
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
+import com.hzg.domain.inExcel;
 import com.hzg.domain.plate;
 
 
@@ -59,7 +60,13 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		return null;
 	} 
 	if(book!=null){
-		sheet=book.getSheet("list");
+	
+		
+		
+		
+		sheet=book.getSheetAt(0);
+		
+		
 		if(sheet==null){
 			try {
 				book.close();
@@ -88,7 +95,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 			}
 			
 		} 	
-		
+	 
 	}
 	try {
 		book.close();
@@ -97,6 +104,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		// TODO 自动生成的 catch 块
 		e.printStackTrace();
 	}
+	
 	return list;
 }
 

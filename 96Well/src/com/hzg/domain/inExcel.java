@@ -2,9 +2,18 @@ package com.hzg.domain;
 
 import java.util.List;
 
-public class inExcel {
+import org.apache.poi.ss.usermodel.Sheet;
 
+
+public class inExcel {
+private Sheet sheet;
 private int rows;
+public Sheet getSheet() {
+	return sheet;
+}
+public void setSheet(Sheet sheet) {
+	this.sheet = sheet;
+}
 private int cols;
 private int margin_left;
 public int getMargin_left() {
