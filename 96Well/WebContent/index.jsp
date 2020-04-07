@@ -76,9 +76,9 @@
 						<td>
 						<div class="input-group">
 								
-					  	 	 <label class="form-control-label text-uppercase"  >行高</label>
+					  	 	 <label class="form-control-label text-uppercase"  >行数</label>
 							
-							<input type="text" placeholder="输入行高" class="form-control"  name="prows"   id="prows" onkeyup="Check();"  > 
+							<input type="text" placeholder="输入行数" class="form-control"  name="prows"   id="prows" onkeyup="Check();"  > 
 									
 						  </div>
 	
@@ -86,17 +86,17 @@
 						</td>
 						<td>
 							<div class="input-group">
-							 <label class="form-control-label text-uppercase">列宽</label> 	
-                      	 	 <input type="text" placeholder="输入列宽" class="form-control"  name="pcols"   id="pcols" onkeyup="Check();">
+							 <label class="form-control-label text-uppercase">列数</label> 	
+                      	 	 <input type="text" placeholder="输入列数" class="form-control"  name="pcols"   id="pcols" onkeyup="Check();">
                       	 	 </div>
 						</td>
  				  </tr>
  				  <tr>
  				  		<td>
- 				  			<div class="invalid-feedback" id="prowsErr" >请输入行高</div>
+ 				  			<div class="invalid-feedback" id="prowsErr" >请输入行数</div>
  				  		</td>
  				  		<td>
- 				  		<div class="invalid-feedback" id="pcolsErr" >请输入列宽</div>
+ 				  		<div class="invalid-feedback" id="pcolsErr" >请输入列数</div>
  				  		</td>
  				  </tr>
  				  
@@ -117,7 +117,7 @@
 				  </tr>
 				  <tr>
  				  		<td colspan="2">
- 				  			<div class="invalid-feedback" id="marginleftrightErr" >左右边距之和必须小于列宽</div>
+ 				  			<div class="invalid-feedback" id="marginleftrightErr" >左右边距之和必须小于列数</div>
  				  		</td>
  				  		
  				  </tr>
@@ -273,7 +273,7 @@ function ajaxFileUpload(){
 
 	$("#loading").show();
 	$.ajaxFileUpload({
-	   		type: 'post',
+	   		type: 'post',	
 				url: 'getNewExcel',
 				secureuri : false,
 				fileElementId : 'upfile',

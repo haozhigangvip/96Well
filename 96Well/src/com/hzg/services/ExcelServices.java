@@ -272,7 +272,7 @@ public class ExcelServices {
 						
 						
 						tcell.setCellValue("Plate layout:"+list.get(listn).getPlate());
-						trow.setHeight((short) (13.5*20));
+						trow.setHeight((short) (17.5*20));
 						}
 					if(rr==topjjrow && topjjrow>0){
 						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bq1Style,2,0 ,1,12));
