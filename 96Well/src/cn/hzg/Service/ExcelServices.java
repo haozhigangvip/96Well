@@ -50,7 +50,7 @@ public class ExcelServices {
 			String ff=savePath+"\\"+newfile+lfilename;					
 			out.flush();
 			rds=new ExcelUtils().excelToList(ff);
-			//开启多线程，删除文件；
+			//寮�惎澶氱嚎绋嬶紝鍒犻櫎鏂囦欢锛�
 			Thread thread = new FileDelete(ff);
 			thread.start();	
 			return rds;
@@ -64,7 +64,7 @@ public class ExcelServices {
 					in.close();
 					out.close();
 				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
+					// TODO 鑷姩鐢熸垚鐨�catch 鍧�
 					e.printStackTrace();
 				}
 		
@@ -76,7 +76,7 @@ public class ExcelServices {
 	public String toExcel(HttpServletRequest request,DataInfo df) {
 		
 		// TODO Auto-generated method stub
-		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/download")+"/template.xlsx");
+		XSSFWorkbook book	=new ExcelUtils().getXLSXBook(request.getRealPath("/WEB-INF/template")+"/template.xlsx");
 		String rowxl="abcdefghijklmnopqrstuvwxyz";
 		XSSFSheet sheet=book.getSheetAt(0);
 		XSSFRow trow=null;
@@ -88,10 +88,10 @@ public class ExcelServices {
 		int cols=df.getCols();
 		int rows=df.getRows();
 		int nrow=0;
-		int btrow=11;//标题行
+		int btrow=11;//鏍囬琛�
 		int rounds=0;
-		int topjjrow=1;//上行行间距行
-		int bottojjrow=1;//下行间距行
+		int topjjrow=1;//涓婅琛岄棿璺濊
+		int bottojjrow=1;//涓嬭闂磋窛琛�
 		int jrr=topjjrow+2;
 		XSSFFont fonta =book.createFont();
 		XSSFFont fontb =book.createFont();
@@ -149,7 +149,7 @@ public class ExcelServices {
 					nomarg=false;
 					tcell=trow.createCell(cc);
 					if(rr==0){	
-						//设置Plate layout
+						//璁剧疆Plate layout
 						if(topjjrow>0){
 							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,0,0 ,1,12));
 						}else
@@ -166,28 +166,28 @@ public class ExcelServices {
 						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bq1Style,2,0 ,1,12));
 					}
 					if(rr==topjjrow+1){	
-						//设置列标题行高
+						//璁剧疆鍒楁爣棰樿楂�
 						trow.setHeight((short) (19.5*20));
 						if(cc>0){
-							//设置列标题
+							//璁剧疆鍒楁爣棰�
 							tcell.setCellValue(cc);
 							
 						}
 						
-						//设置列标题边距及格式
+						//璁剧疆鍒楁爣棰樿竟璺濆強鏍煎紡
 						if(cc<cols){
-						 //前几列
+						 //鍓嶅嚑鍒�
 						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btaStyle,0,2 ,1,10));
 						}
 						else
 						{
-						 //最后列
+						 //鏈�悗鍒�
 							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btbStyle,4,2 ,1,10));
 						}
 					}
 					
 					if(rr>topjjrow+1){
-						//设置行标题	
+						//璁剧疆琛屾爣棰�
 						if(cc==0){
 							if((rr-jrr)%2==0){
 							
@@ -200,16 +200,16 @@ public class ExcelServices {
 							
 								if((rr-jrr)%2>0 && (rr-jrr>=tmar*2+1) && rr-jrr<(rows)*2-bmar*2){
 									if(cc>lmar && cc<cols-rmar+1 && listn<list.size()){
-										//填充CAS
+										//濉厖CAS
 										sheet.getRow(nrow-1).getCell(cc).setCellValue(list.get(listn).getCAS()); 
 										
-										//填充Compound
+										//濉厖Compound
 										sheet.getRow(nrow).getCell(cc).setCellValue(list.get(listn).getCompound());
 										
 										listn++;
 									}
 								if(cc<cols-rmar||rmar==0){
-								//CAS格式
+								//CAS鏍煎紡
 									if(rr-jrr==(tmar)*2+1 && tmar>0){
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjeStyle,10,2 ,1,8));
 									}else
@@ -218,7 +218,7 @@ public class ExcelServices {
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjaStyle,6,2 ,1,8));
 									}	
 								
-								//Compund格式
+								//Compund鏍煎紡
 								  if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
 									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjfStyle,11,2 ,0,7));
 								  }else
@@ -230,7 +230,7 @@ public class ExcelServices {
 								{
 								
 								
-								    //CAS格式
+								    //CAS鏍煎紡
 									if(rr-jrr==(tmar)*2+1 && tmar>0){
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjgStyle,14,2 ,1,8));
 									}else{
@@ -238,7 +238,7 @@ public class ExcelServices {
 									}
 								
 									
-									//Compund格式
+									//Compund鏍煎紡
 									 if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
 										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjhStyle,15,2 ,0,7));
 									 }else
@@ -249,9 +249,9 @@ public class ExcelServices {
 								}
 								}
 								
-							//设置列边距
+							//璁剧疆鍒楄竟璺�
 							if(cc<=lmar ||cc>=cols-rmar+1){
-								//设置边距列宽
+								//璁剧疆杈硅窛鍒楀
 								sheet.setColumnWidth(cc, (int)8.38*252+323);
 								tcell.setCellValue("Empty");
 								
@@ -259,7 +259,7 @@ public class ExcelServices {
 								 if((rr-jrr)%2>0 ){
 								 
 									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
-									 //设置列边距格式
+									 //璁剧疆鍒楄竟璺濇牸寮�
 									 if((cc==lmar  )){
 										
 										 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
@@ -281,12 +281,12 @@ public class ExcelServices {
 								 }
 								
 							}else{
-								//设置数据列宽
+								//璁剧疆鏁版嵁鍒楀
 								sheet.setColumnWidth(cc, 11*252+323);
 							}
 							
 							
-							//设置行边距
+							//璁剧疆琛岃竟璺�
 							if(rr-jrr<tmar*2||rr-jrr>=(rows)*2-bmar*2){
 								 tcell.setCellValue("Empty");
 								 if((rr-jrr)%2>0){
@@ -294,7 +294,7 @@ public class ExcelServices {
 									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
 									 }
 									 
-									 //设置行边距格式
+									 //璁剧疆琛岃竟璺濇牸寮�
 									  if(rr-jrr<=tmar*2-1||rr-jrr>=(rows)*2-bmar*2+1){
 									  if(rr-jrr==(rows)*2-bmar*2+1 && bmar>0){
 									   sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptydStyle,13,2 ,0,8));
@@ -333,7 +333,7 @@ public class ExcelServices {
 		}
 		
 		
-		//保存数据
+		//淇濆瓨鏁版嵁
 		
 		String filename=String.valueOf(System.currentTimeMillis())+".xlsx";
 		FileOutputStream out=null;
@@ -363,22 +363,19 @@ public class ExcelServices {
 	
 	public void download(String file,HttpServletResponse response,HttpServletRequest request,ServletContext con) throws IOException{
 
-	    //閽堝涓嶅悓娴忚鍣ㄦ敼鍙樼紪鐮�
-	     
-			//鑾峰彇conntext
+	    //闁藉牆顕稉宥呮倱濞村繗顫嶉崳銊︽暭閸欐绱惍锟�	     
+			//閼惧嘲褰嘽onntext
 			
-			//璁剧疆鏂囦欢mimeType
+			//鐠佸墽鐤嗛弬鍥︽mimeType
 			
 			String mimetype=con.getMimeType(file);
 			response.setContentType(mimetype);
-			//璁剧疆涓嬭浇澶翠俊鎭�
-			response.setHeader("content-disposition", "attchment;filename="+file);
-			//瀵规嫹娴�
-			//鑾峰彇杈撳叆娴�
+			//鐠佸墽鐤嗘稉瀣祰婢剁繝淇婇幁锟�			response.setHeader("content-disposition", "attchment;filename="+file);
+			//鐎佃瀚瑰ù锟�			//閼惧嘲褰囨潏鎾冲弳濞达拷
 			
 			InputStream is=con.getResourceAsStream("/download/"+file);
 			
-			//鑾峰彇杈撳嚭娴�
+			//閼惧嘲褰囨潏鎾冲毉濞达拷
 			ServletOutputStream os=response.getOutputStream();
 			
 			int len=-1;

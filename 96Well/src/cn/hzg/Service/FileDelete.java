@@ -6,6 +6,7 @@ public class FileDelete extends Thread {
 	private String filepath;
 	public FileDelete(String filepath){
 		this.filepath=filepath;
+		System.out.println(filepath);
 	}
 	public void run(){
 		File ff= new File(filepath);
