@@ -6,14 +6,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
-<link rel="stylesheet" href="css/PopupWindow.css" >
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/ajaxfileupload.js"></script>
-<script type="text/javascript" src="js/PopupWindow.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath }/css/bootstrap.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/css/style.default.css" id="theme-stylesheet">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/css/PopupWindow.css" >
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/PopupWindow.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery.cookie.js"></script>
 
 <title>96-WELL</title>
 </head>
@@ -78,8 +77,7 @@
 								
 					  	 	 <label class="form-control-label text-uppercase"  >行数</label>
 							
-							<input type="text" placeholder="输入行数" class="form-control"  name="prows"   id="prows" onkeyup="Check();"  > 
-									
+							<input type="text" placeholder="输入行数" class="form-control"  name="prows"   id="prows" onkeyup="Check();"  > 	
 						  </div>
 	
 						
@@ -256,39 +254,52 @@ function Check(){
 	return rt;
 }
 function ajaxFileUpload(){
-	 var file= $("#upfile").val();
-	 var prows=Number($("#prows").val());
-	 var pcols=Number($("#pcols").val());
-	 var margin_right=Number($("#margin_right").val());
-	 var margin_left=Number($("#margin_left").val());
-	 var margin_top=Number($("#margin_top").val());
-	 var margin_butto=Number($("#margin_butto").val());
-	 
+	 var file= $("#upfile")[0].files[0];
+		
+	 var rows=parseInt($("#prows").val());
+	 var cols=parseInt($("#pcols").val());
+	 var margin_right=parseInt($("#margin_right").val());
+	 var margin_left=parseInt($("#margin_left").val());
+	 var margin_top= parseInt($("#margin_top").val());
+	 var margin_butto=parseInt($("#margin_butto").val());
+	
+	 var formData=new FormData();
+
+
 	if(Check()==false){
 
 		return false;
-	};
+	}; 
+	
+	formData.append("file",file);
+
+	var DataInfo= JSON.stringify({
+	    "rows":rows,
+	    "cols": cols,
+	    "margin_right": margin_right,
+	    "margin_left": margin_left,
+	    "margin_top": margin_top,
+	    "margin_butto":margin_butto
+	    
+	});
+
+	formData.append('DataInfo', new Blob([DataInfo],{type: "application/json"}));
 	
 	$("#sbtn").blur();
-
 	$("#loading").show();
-	$.ajaxFileUpload({
-	   		type: 'post',	
-				url: 'getNewExcel',
-				secureuri : false,
-				fileElementId : 'upfile',
-				dataType : 'json',
-				data: {prows : prows,
-	       		pcols : pcols,
-	       		margin_right : margin_right ,
-	       		margin_left : margin_left,
-	       		margin_top : margin_top,
-	       		margin_butto :margin_butto},
+
+	$.ajax({
+	   			type: "post",	
+				url: "getNewExcel.action",	
+				processData: false,
+				contentType : false,
+				dataType : "json",
+				data : formData,
+				cache: false,
 				success: function(data) {
 					valid = false;
 					if(data.status==0){
 						$("#loading").hide(); 
-
 						dispAlert("数据格式错误,请确认后重新转换","");
 						
 					}else
@@ -298,25 +309,17 @@ function ajaxFileUpload(){
 						var url=data.url;
 						strs=url.split('/');
 						var filename=strs[strs.length-1];
-					
 						dispAlert('转换完成，请点击'+"<a style=\"color:red\" href=\"javascript:void(0);\" id=\"contentHref\">"+filename+"</a>下载",url);
-					
-		
 					}
 					$("#loading").hide();  
 				}, 
-				error: function(data,e) {
-					$("#loading").hide();    
+				error: function(e) {
+					$("#loading").hide();
 					valid = false;
-
 					dispAlert("系统错误:"+ e +"，请联系管理员","");
-
-
 				}
 			})
-
 			return false;	
-
 }
 
 
