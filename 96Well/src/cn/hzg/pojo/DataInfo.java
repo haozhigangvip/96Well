@@ -1,9 +1,6 @@
 package cn.hzg.pojo;
-
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Sheet;
-
 
 public class DataInfo {
 private Sheet sheet;

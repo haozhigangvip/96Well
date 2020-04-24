@@ -27,6 +27,7 @@ public class to96Excel {
 			message="status: 0";
 		}else
 		{
+			
 			df.setList(list);
 			String cookstr="{\"prows\":"+df.getRows()+
 					",\"pcols\":"+df.getCols()+
