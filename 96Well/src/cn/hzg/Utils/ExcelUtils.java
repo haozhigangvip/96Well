@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import cn.hzg.pojo.plate;
@@ -40,7 +44,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		try {
 			book.close();
 		} catch (IOException e1) {
-			// TODO 自动生成的 catch 块
+			// TODO 鑷姩鐢熸垚鐨� catch 鍧�
 			e1.printStackTrace();
 		}
 		return null;
@@ -70,9 +74,19 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 			plate pl=new plate();
 			row=sheet.getRow(rownum);
 			if(row!=null){
+                Cell deliveryTimeCell =row.getCell(0);
+                System.out.println(deliveryTimeCell.getCellTypeEnum());
+                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC &&HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
+                	pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+                }else{
+                	pl.setCAS(row.getCell(0).getStringCellValue());
+                }
+                
+				
 
 				
-				pl.setCAS(row.getCell(0).getStringCellValue());
+				
+				
 				pl.setCompound(row.getCell(1).getStringCellValue());
 				pl.setPlate(row.getCell(2).getStringCellValue());
 
@@ -87,7 +101,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		book.close();
 	
 	} catch (IOException e) {
-		// TODO 自动生成的 catch 块
+		// TODO 鑷姩鐢熸垚鐨� catch 鍧�
 		e.printStackTrace();
 	}
 	
@@ -102,7 +116,7 @@ public XSSFWorkbook getXLSXBook(String filePath ){
 		
 		book = new XSSFWorkbook(ff);
 	} catch (Exception e1) {
-		// TODO 鑷姩鐢熸垚鐨�catch 鍧�
+		// TODO 閼奉亜濮╅悽鐔稿灇閻拷catch 閸э拷
 		e1.printStackTrace();
 		return null;
 		
