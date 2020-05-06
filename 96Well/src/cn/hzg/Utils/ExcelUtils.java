@@ -76,8 +76,14 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 			if(row!=null){
                 Cell deliveryTimeCell =row.getCell(0);
                 System.out.println(deliveryTimeCell.getCellTypeEnum());
-                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC &&HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
-                	pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC ){
+                	if(HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
+                		pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+                	}else
+                	{
+                		pl.setCAS(String.valueOf(row.getCell(0).getNumericCellValue()));
+                	}
+                	
                 }else{
                 	pl.setCAS(row.getCell(0).getStringCellValue());
                 }
