@@ -2,6 +2,7 @@ package cn.hzg.Utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.EncryptedDocumentException;
@@ -76,16 +77,20 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 			if(row!=null){
                 Cell deliveryTimeCell =row.getCell(0);
                 System.out.println(deliveryTimeCell.getCellTypeEnum());
-                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC &&HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
-                	pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC ){
+                	if(HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
+                		pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+                	}else
+                	{
+                		DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
+
+                		pl.setCAS(decimalFormat.format(row.getCell(0).getNumericCellValue()).toString());
+                	}
+                	
                 }else{
                 	pl.setCAS(row.getCell(0).getStringCellValue());
                 }
-                
-				
 
-				
-				
 				
 				pl.setCompound(row.getCell(1).getStringCellValue());
 				pl.setPlate(row.getCell(2).getStringCellValue());
