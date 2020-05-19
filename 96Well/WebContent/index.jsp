@@ -333,7 +333,7 @@ $(function(){
 
 	if($.cookie("96wellCookie")!=null){
 		
-		ck1=$.cookie("96wellCookie");
+		ck1=decodeURI($.cookie("96wellCookie"));
 		ck=JSON.parse(ck1);
 		if(ck.prows!=null){document.myForm.prows.value=ck.prows;}
 		if(ck.pcols!=null){document.myForm.pcols.value=ck.pcols;}

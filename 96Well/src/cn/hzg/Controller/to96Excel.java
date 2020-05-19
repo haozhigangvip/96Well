@@ -1,4 +1,6 @@
 package cn.hzg.Controller;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +18,7 @@ import cn.hzg.pojo.plate;
 public class to96Excel {
 
 	@RequestMapping("/getNewExcel")
-	public  @ResponseBody String json(@RequestPart("DataInfo") DataInfo df,@RequestPart("file") MultipartFile file,HttpServletRequest request,HttpServletResponse response){
+	public  @ResponseBody String json(@RequestPart("DataInfo") DataInfo df,@RequestPart("file") MultipartFile file,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException{
 		String savePath = request.getServletContext().getRealPath("/WEB-INF/upload");
 		String message="";
 		List<plate> list=null;
@@ -36,10 +38,12 @@ public class to96Excel {
 					",\"margin_top\":"+df.getMargin_top()+
 					",\"margin_butto\":"+df.getMargin_butto()+
 					"}";
-			
-			Cookie ck=new Cookie("96wellCookie", cookstr);
+			String encodeCookie = URLEncoder.encode(cookstr,"UTF-8");
+			Cookie ck=new Cookie("96wellCookie", encodeCookie);
 			ck.setMaxAge(31104000);
 			ck.setPath(request.getContextPath()+"/");
+			System.out.println(request.getContextPath());
+			
 			response.addCookie(ck);
 			String newfile=Excel.toExcel(request,df);
 			message="\"status\": 1,\"url\":\""+request.getContextPath()+"/download/"+newfile+"\"";
