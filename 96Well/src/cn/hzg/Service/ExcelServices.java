@@ -85,6 +85,10 @@ public class ExcelServices {
 		int rmar=df.getMargin_right();
 		int tmar=df.getMargin_top();
 		int bmar=df.getMargin_butto();
+		int mv=6;
+
+		int mvv=(mv>0?1:0);
+		
 		int cols=df.getCols();
 		int rows=df.getRows();
 		int nrow=0;
@@ -105,11 +109,11 @@ public class ExcelServices {
 		
 		int zzrow=list.size();
 		int listn=0;
-		if(zzrow % ((cols-lmar-rmar)*(rows-tmar-bmar))==0){
-			rounds=zzrow/((cols-lmar-rmar)*(rows-tmar-bmar));
+		if(zzrow % ((cols-lmar-rmar-mvv)*(rows-tmar-bmar))==0){
+			rounds=zzrow/((cols-lmar-rmar-mvv)*(rows-tmar-bmar));
 		}else
 		{
-			rounds=(zzrow/((cols-lmar-rmar)*(rows-tmar-bmar)))+1;
+			rounds=(zzrow/((cols-lmar-rmar-mvv)*(rows-tmar-bmar)))+1;
 		}
 		
 		XSSFCellStyle bqStyle=book.createCellStyle();
@@ -130,13 +134,14 @@ public class ExcelServices {
 		XSSFCellStyle emptybStyle=(XSSFCellStyle)empty_cs.clone();
 		XSSFCellStyle emptydStyle=(XSSFCellStyle)empty_cs.clone();
 		XSSFCellStyle emptyeStyle=(XSSFCellStyle)empty_cs.clone();
-		
+		XSSFCellStyle emptyfStyle=(XSSFCellStyle)empty_cs.clone();
+		XSSFCellStyle emptygStyle=(XSSFCellStyle)empty_cs.clone();
 
 		for (int rnd=0;rnd<rounds;rnd++){
 			for(int rr=0;rr<(rows+1)*2+1;rr++){
 				
 				nrow=btrow+rnd*(rows*2+jrr+bottojjrow)+rr;
-		
+				System.out.println("nrow:"+nrow);
 				trow=sheet.createRow(nrow);
 				
 				if((rr-jrr)%2==0){
@@ -149,7 +154,7 @@ public class ExcelServices {
 					nomarg=false;
 					tcell=trow.createCell(cc);
 					if(rr==0){	
-						//璁剧疆Plate layout
+						//设置Plate layout
 						if(topjjrow>0){
 							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,0,0 ,1,12));
 						}else
@@ -158,36 +163,36 @@ public class ExcelServices {
 							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,2,0 ,1,12));
 						}
 						
-						
+						//填充Plate layout
 						tcell.setCellValue("Plate layout:"+list.get(listn).getPlate());
 						trow.setHeight((short) (14.3*20));
 						}
+					
+					//设置标题顶端行格式
 					if(rr==topjjrow && topjjrow>0){
 						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bq1Style,2,0 ,1,12));
 					}
+					
 					if(rr==topjjrow+1){	
-						//璁剧疆鍒楁爣棰樿楂�
+						//填充列标题
 						trow.setHeight((short) (19.5*20));
 						if(cc>0){
-							//璁剧疆鍒楁爣棰�
-							tcell.setCellValue(cc);
-							
+							 tcell.setCellValue(cc);
 						}
-						
-						//璁剧疆鍒楁爣棰樿竟璺濆強鏍煎紡
+						//设置列标题格式
 						if(cc<cols){
-						 //鍓嶅嚑鍒�
+						 //列标题除最后一个格式
 						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btaStyle,0,2 ,1,10));
 						}
 						else
 						{
-						 //鏈�悗鍒�
+						 //列标题最后一个格式
 							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btbStyle,4,2 ,1,10));
 						}
 					}
 					
 					if(rr>topjjrow+1){
-						//璁剧疆琛屾爣棰�
+						//设置行标题
 						if(cc==0){
 							if((rr-jrr)%2==0){
 							
@@ -198,39 +203,45 @@ public class ExcelServices {
 						 
 						}else{
 							
-								if((rr-jrr)%2>0 && (rr-jrr>=tmar*2+1) && rr-jrr<(rows)*2-bmar*2){
-									if(cc>lmar && cc<cols-rmar+1 && listn<list.size()){
-										//濉厖CAS
+							
+								if((rr-jrr)%2>0 && (rr-jrr>=tmar*2+1) && rr-jrr<(rows)*2-bmar*2 ){
+									if(cc>lmar && cc<cols-rmar+1 && cc!=mv && listn<list.size()){
+										//填充CAS
 										sheet.getRow(nrow-1).getCell(cc).setCellValue(list.get(listn).getCAS()); 
 										
-										//濉厖Compound
+										//填充Compound
 										sheet.getRow(nrow).getCell(cc).setCellValue(list.get(listn).getCompound());
 										
 										listn++;
 									}
-								if(cc<cols-rmar||rmar==0){
-								//CAS鏍煎紡
+									
+									
+								if((cc<cols-rmar||rmar==0)&& cc!=mv){
+								//设置CAS格式									
 									if(rr-jrr==(tmar)*2+1 && tmar>0){
+										//EMPYT下一行的首行
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjeStyle,10,2 ,1,8));
 									}else
 									{
-										
+										//非EMPYT下一行的首行
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjaStyle,6,2 ,1,8));
 									}	
 								
-								//Compund鏍煎紡
+								//设置Compund格式
 								  if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
+										//EMPYT下一行的首行
 									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjfStyle,11,2 ,0,7));
 								  }else
 								  {
-								   sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjbStyle,7,2 ,0,7));
+										//EMPYT下一行的首行
+									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjbStyle,7,2 ,0,7));
 								  }
 								}
 								else
 								{
 								
 								
-								    //CAS鏍煎紡
+								    //设置最右侧首列CAS样式
 									if(rr-jrr==(tmar)*2+1 && tmar>0){
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjgStyle,14,2 ,1,8));
 									}else{
@@ -238,7 +249,7 @@ public class ExcelServices {
 									}
 								
 									
-									//Compund鏍煎紡
+									//设置最右侧首列Compund样式
 									 if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
 										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjhStyle,15,2 ,0,7));
 									 }else
@@ -249,8 +260,8 @@ public class ExcelServices {
 								}
 								}
 								
-							//璁剧疆鍒楄竟璺�
-							if(cc<=lmar ||cc>=cols-rmar+1){
+							//填充empty
+							if(cc<=lmar ||cc>=cols-rmar+1|| cc==mv){
 								//璁剧疆杈硅窛鍒楀
 								sheet.setColumnWidth(cc, (int)8.38*252+323);
 								tcell.setCellValue("Empty");
@@ -259,13 +270,21 @@ public class ExcelServices {
 								 if((rr-jrr)%2>0 ){
 								 
 									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
-									 //璁剧疆鍒楄竟璺濇牸寮�
-									 if((cc==lmar  )){
-										
+									 
+									
+									//设置empty右虚线
+									 if(cc==lmar  || (cc==mv && mv>0) ){
+										if(cc==lmar){
 										 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
 										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
+										}
+										if(cc==mv && mv>0 ){
+											System.out.println("cc:"+cc+",nrow:"+nrow);
+											 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptygStyle,16,2 ,0,8));
+											 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptygStyle,16,2 ,0,8));
+										 }
 									 }else if(cc==cols-rmar+1){
-										
+										//设置最右边格式
 										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 , 0,8));
 										sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 ,0,8));
 									 }else

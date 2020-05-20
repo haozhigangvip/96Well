@@ -58,7 +58,7 @@
                    
                     <table>
  					 <tr height="60px">
-						<td colspan="2">
+						<td colspan="3">
 	        				    <div class="input-group">
 								<label class="form-control-label text-uppercase">选择文件</label>
 								<input class="form-control" id="upfile" type="file"  name="file" accept=".xls,.xlsx,.xlsm" width="300px" onchange="Check();">
@@ -66,7 +66,7 @@
 						</td>
  					 </tr>
  					 <tr>
- 				  		<td colspan="2">
+ 				  		<td colspan="3">
  				  			<div class="invalid-feedback" id="fileErr" >请选择Excel文件</div>
  				  		</td>
  				  	</tr>
@@ -108,13 +108,20 @@
 					</td>
 					<td>
 						<div class="input-group">
+					  	 	 <label class="form-control-label text-uppercase">中竖</label>
+                   	    	  <input type="text" placeholder="输入中边距" class="form-control" value=0 name="margin_left" id="mid_vertical" onkeyup="Check();">
+                   	    </div>
+					</td>
+					  
+					<td>
+						<div class="input-group">
 							<label class="form-control-label text-uppercase">右边距</label>
                       	  	<input type="text" placeholder="输入右边距" class="form-control" value=0 name="margin_right"  id="margin_right" onkeyup="Check();" >
                       	  </div>
 					</td>
 				  </tr>
 				  <tr>
- 				  		<td colspan="2">
+ 				  		<td colspan="3">
  				  			<div class="invalid-feedback" id="marginleftrightErr" >左右边距之和必须小于列数</div>
  				  		</td>
  				  		
@@ -133,6 +140,12 @@
 					</td>
 					<td>
 						<div class="input-group">
+							<label class="form-control-label text-uppercase">中横</label>
+                      	  	<input type="text" placeholder="输入右边距" class="form-control" value=0 name="margin_right"  id="margin_right" onkeyup="Check();" >
+                      	  </div>
+					</td> 
+					<td>
+						<div class="input-group">
 							<label class="form-control-label text-uppercase">下边距</label>
                       	 	 <input type="text" placeholder="输入下边距" class="form-control" value=0 name="margin_butto"  id="margin_butto" onkeyup="Check();">
 						  </div>
@@ -140,13 +153,13 @@
 					</td>
 				  </tr>
 				   <tr>
- 				  		<td colspan="2">
+ 				  		<td colspan="3">
  				  			<div class="invalid-feedback" id="margintopbuttoErr" >上下边距之和必须小于行高</div>
  				  		</td>
  				  		
  				  </tr>
 				  <tr height="60px">
-					<td colspan="2">
+					<td colspan="3">
 						<div class="input-group">  
 						     
                        		 <button type="submit" class="btn btn-primary" style="margin:auto 20px" id="sbtn" onclick="return ajaxFileUpload();">转换</button>

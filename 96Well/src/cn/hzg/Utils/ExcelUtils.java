@@ -211,6 +211,12 @@ public static CellStyle excelStyle(XSSFFont font ,CellStyle style,int Border,int
 		
 		style.setBorderBottom(CellStyle.BORDER_DASHED);
 		break;
+	case 16:
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_DASHED);
+		style.setBorderRight(CellStyle.BORDER_DASHED);
+		break;
 	default:
 		break;
 	}

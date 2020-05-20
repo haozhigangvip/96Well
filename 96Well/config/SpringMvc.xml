@@ -29,11 +29,11 @@
 		<property name="prefix" value="/"></property>
 		<!-- 后缀为：JSP文件的后缀名 -->
 		<property name="suffix" value="jsp"></property>
+		
 	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
-	<!-- 配置文件上传 -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!--设置上传文件大小（5MB  -->
-		<property name="maxUploadSize" value="10492880"></property>
-	</bean>
+	
+	
+	
 </beans>
