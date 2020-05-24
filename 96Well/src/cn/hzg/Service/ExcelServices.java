@@ -240,12 +240,12 @@ public class ExcelServices {
 											sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
 											 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
 											 
-											 if(list.get(listn-1).getCAS().trim().equals("Empty")){
+											 if(listn>0&&list.get(listn-1).getCAS().trim().equals("Empty")){
 
 												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
 												 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
 											 }
-											 if(list.get(listn+1).getCAS().trim().equals("Empty")){
+											 if(listn+1<list.size() &&list.get(listn+1).getCAS().trim().equals("Empty")){
 
 												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
 												 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
