@@ -77,7 +77,7 @@
 								
 					  	 	 <label class="form-control-label text-uppercase"  >行数</label>
 							
-							<input type="text" placeholder="输入行数" class="form-control"  name="prows"   id="prows" onkeyup="Check();"  > 	
+							<input type="text" placeholder="输入行数" class="form-control"  name="prows"   id="prows"  onkeyup="Check()" > 	
 						  </div>
 	
 						
@@ -85,7 +85,7 @@
 						<td>
 							<div class="input-group">
 							 <label class="form-control-label text-uppercase">列数</label> 	
-                      	 	 <input type="text" placeholder="输入列数" class="form-control"  name="pcols"   id="pcols" onkeyup="Check();">
+                      	 	 <input type="text" placeholder="输入列数" class="form-control"  name="pcols"   id="pcols" onkeyup="Check()">
                       	 	 </div>
 						</td>
  				  </tr>
@@ -96,67 +96,6 @@
  				  		<td>
  				  		<div class="invalid-feedback" id="pcolsErr" >请输入列数</div>
  				  		</td>
- 				  </tr>
- 				  
- 				  
-				  <tr height="60px">
-					<td>
-						<div class="input-group">
-					  	 	 <label class="form-control-label text-uppercase">左边距</label>
-                   	    	  <input type="text" placeholder="输入左边距" class="form-control" value=0 name="margin_left" id="margin_left" onkeyup="Check();">
-                   	    </div>
-					</td>
-					<td>
-						<div class="input-group">
-					  	 	 <label class="form-control-label text-uppercase">中竖</label>
-                   	    	  <input type="text" placeholder="输入中边距" class="form-control" value=0 name="margin_left" id="mid_vertical" onkeyup="Check();">
-                   	    </div>
-					</td>
-					  
-					<td>
-						<div class="input-group">
-							<label class="form-control-label text-uppercase">右边距</label>
-                      	  	<input type="text" placeholder="输入右边距" class="form-control" value=0 name="margin_right"  id="margin_right" onkeyup="Check();" >
-                      	  </div>
-					</td>
-				  </tr>
-				  <tr>
- 				  		<td colspan="3">
- 				  			<div class="invalid-feedback" id="marginleftrightErr" >左右边距之和必须小于列数</div>
- 				  		</td>
- 				  		
- 				  </tr>
-				  
-				  
-				  
-				  
-				  
-				  <tr height="60px">
-					<td>
-						<div class="input-group">
-					  	 	 <label class="form-control-label text-uppercase">上边距</label>
-                   	    	  <input type="text" placeholder="输入上边距" class="form-control" value=0 name="margin_top"  id="margin_top" onkeyup="Check();">
-                   	    </div>
-					</td>
-					<td>
-						<div class="input-group">
-							<label class="form-control-label text-uppercase">中横</label>
-                      	  	<input type="text" placeholder="输入右边距" class="form-control" value=0 name="margin_right"  id="margin_right" onkeyup="Check();" >
-                      	  </div>
-					</td> 
-					<td>
-						<div class="input-group">
-							<label class="form-control-label text-uppercase">下边距</label>
-                      	 	 <input type="text" placeholder="输入下边距" class="form-control" value=0 name="margin_butto"  id="margin_butto" onkeyup="Check();">
-						  </div>
-
-					</td>
-				  </tr>
-				   <tr>
- 				  		<td colspan="3">
- 				  			<div class="invalid-feedback" id="margintopbuttoErr" >上下边距之和必须小于行高</div>
- 				  		</td>
- 				  		
  				  </tr>
 				  <tr height="60px">
 					<td colspan="3">
@@ -268,39 +207,24 @@ function Check(){
 }
 function ajaxFileUpload(){
 	 var file= $("#upfile")[0].files[0];
-		
 	 var rows=parseInt($("#prows").val());
 	 var cols=parseInt($("#pcols").val());
-	 var margin_right=parseInt($("#margin_right").val());
-	 var margin_left=parseInt($("#margin_left").val());
-	 var margin_top= parseInt($("#margin_top").val());
-	 var margin_butto=parseInt($("#margin_butto").val());
-	
 	 var formData=new FormData();
 
-
+	formData.append("file",file);
+	var DataInfo= JSON.stringify({
+	    "rows":rows,
+	    "cols": cols,	    
+	});
 	if(Check()==false){
 
 		return false;
 	}; 
-	
-	formData.append("file",file);
-
-	var DataInfo= JSON.stringify({
-	    "rows":rows,
-	    "cols": cols,
-	    "margin_right": margin_right,
-	    "margin_left": margin_left,
-	    "margin_top": margin_top,
-	    "margin_butto":margin_butto
-	    
-	});
-
 	formData.append('DataInfo', new Blob([DataInfo],{type: "application/json"}));
 	
 	$("#sbtn").blur();
 	$("#loading").show();
-
+	
 	$.ajax({
 	   			type: "post",	
 				url: "getNewExcel.action",	
@@ -350,10 +274,6 @@ $(function(){
 		ck=JSON.parse(ck1);
 		if(ck.prows!=null){document.myForm.prows.value=ck.prows;}
 		if(ck.pcols!=null){document.myForm.pcols.value=ck.pcols;}
-		if(ck.margin_left!=null){document.myForm.margin_left.value=ck.margin_left;}
-		if(ck.margin_right!=null){document.myForm.margin_right.value=ck.margin_right;}
-		if(ck.margin_top!=null){document.myForm.margin_top.value=ck.margin_top;}	
-		if(ck.margin_butto!=null){document.myForm.margin_butto.value=ck.margin_butto;}
 	}
 
 		

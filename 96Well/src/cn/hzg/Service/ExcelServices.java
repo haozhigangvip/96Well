@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.internal.runners.model.EachTestNotifier;
 import org.springframework.web.multipart.MultipartFile;
 import cn.hzg.pojo.DataInfo;
 import cn.hzg.pojo.plate;
@@ -23,7 +24,7 @@ import cn.hzg.Utils.getuuid;;
 
 public class ExcelServices {
 
-	public List<plate> readExcel(MultipartFile file,String savePath) {
+	public DataInfo readExcel(MultipartFile file,String savePath,DataInfo df) {
 		// TODO Auto-generated method stub
 		
 		List<plate> rds=null;
@@ -49,11 +50,13 @@ public class ExcelServices {
 			}
 			String ff=savePath+"\\"+newfile+lfilename;					
 			out.flush();
-			rds=new ExcelUtils().excelToList(ff);
-			//寮�惎澶氱嚎绋嬶紝鍒犻櫎鏂囦欢锛�
+			
+			df=new ExcelUtils().excelToList(ff,df);
+
+			
 			Thread thread = new FileDelete(ff);
 			thread.start();	
-			return rds;
+			return df;
 			}
 			catch (Exception e) {
 				e.printStackTrace();
@@ -81,10 +84,7 @@ public class ExcelServices {
 		XSSFSheet sheet=book.getSheetAt(0);
 		XSSFRow trow=null;
 		XSSFCell tcell=null;
-		int lmar=df.getMargin_left();
-		int rmar=df.getMargin_right();
-		int tmar=df.getMargin_top();
-		int bmar=df.getMargin_butto();
+	
 		int mv=6;
 
 		int mvv=(mv>0?1:0);
@@ -92,8 +92,6 @@ public class ExcelServices {
 		int cols=df.getCols();
 		int rows=df.getRows();
 		int nrow=0;
-		int btrow=11;//鏍囬琛�
-		int rounds=0;
 		int topjjrow=1;//涓婅琛岄棿璺濊
 		int bottojjrow=1;//涓嬭闂磋窛琛�
 		int jrr=topjjrow+2;
@@ -102,47 +100,37 @@ public class ExcelServices {
 		XSSFFont fontd =book.createFont();
 		XSSFFont fonte =book.createFont();
 		XSSFFont fontf =book.createFont();
-		XSSFCellStyle empty_cs=(sheet.getRow(11).getCell(0).getCellStyle());
-		XSSFCellStyle data_cs=(sheet.getRow(11).getCell(1).getCellStyle());
+		XSSFCellStyle empty1_cs=(sheet.getRow(13).getCell(1).getCellStyle());
+		XSSFCellStyle empty2_cs=(sheet.getRow(13).getCell(3).getCellStyle());
+		XSSFCellStyle empty3_cs=(sheet.getRow(13).getCell(2).getCellStyle());
+		XSSFCellStyle empty4_cs=(sheet.getRow(13).getCell(4).getCellStyle());
+
+		XSSFCellStyle data1_cs1=(sheet.getRow(11).getCell(1).getCellStyle());
+		XSSFCellStyle data1_cs2=(sheet.getRow(12).getCell(1).getCellStyle());
+		XSSFCellStyle data2_cs1=(sheet.getRow(11).getCell(2).getCellStyle());
+		XSSFCellStyle data2_cs2=(sheet.getRow(12).getCell(2).getCellStyle());
+		XSSFCellStyle data3_cs1=(sheet.getRow(11).getCell(3).getCellStyle());
+		XSSFCellStyle data3_cs2=(sheet.getRow(12).getCell(3).getCellStyle());
+		
+		XSSFCellStyle plateStyle=(sheet.getRow(13).getCell(0).getCellStyle());
+
+		
 		Boolean nomarg=false;
+		
 		List<plate> list=df.getList();
 		
 		int zzrow=list.size();
 		int listn=0;
-		if(zzrow % ((cols-lmar-rmar-mvv)*(rows-tmar-bmar))==0){
-			rounds=zzrow/((cols-lmar-rmar-mvv)*(rows-tmar-bmar));
-		}else
-		{
-			rounds=(zzrow/((cols-lmar-rmar-mvv)*(rows-tmar-bmar)))+1;
-		}
-		
-		XSSFCellStyle bqStyle=book.createCellStyle();
-		XSSFCellStyle bq1Style=book.createCellStyle();
-		XSSFCellStyle btaStyle=book.createCellStyle();
-		XSSFCellStyle btbStyle=book.createCellStyle();
-		XSSFCellStyle sjaStyle=(XSSFCellStyle)data_cs.clone();
-		XSSFCellStyle sjbStyle=book.createCellStyle();
-		XSSFCellStyle sjcStyle=(XSSFCellStyle)data_cs.clone();
-		XSSFCellStyle sjdStyle=book.createCellStyle();
-		XSSFCellStyle sjeStyle=(XSSFCellStyle)data_cs.clone();
-		XSSFCellStyle sjfStyle=book.createCellStyle();
-		XSSFCellStyle sjgStyle=(XSSFCellStyle)data_cs.clone();
-		XSSFCellStyle sjhStyle=book.createCellStyle();
-		XSSFCellStyle rowbtStyle=book.createCellStyle();
-		XSSFCellStyle emptyaStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptycStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptybStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptydStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptyeStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptyfStyle=(XSSFCellStyle)empty_cs.clone();
-		XSSFCellStyle emptygStyle=(XSSFCellStyle)empty_cs.clone();
+		int btrow=11;//从出去标题行的起始行
 
+		int rounds=df.getRounds();
+		
 		for (int rnd=0;rnd<rounds;rnd++){
 			for(int rr=0;rr<(rows+1)*2+1;rr++){
 				
 				nrow=btrow+rnd*(rows*2+jrr+bottojjrow)+rr;
-				System.out.println("nrow:"+nrow);
 				trow=sheet.createRow(nrow);
+				
 				
 				if((rr-jrr)%2==0){
 				trow.setHeight((short) (24*20));
@@ -156,23 +144,30 @@ public class ExcelServices {
 					if(rr==0){	
 						//设置Plate layout
 						if(topjjrow>0){
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,0,0 ,1,12));
+							sheet.getRow(nrow).getCell(cc).setCellStyle(plateStyle);
 						}else
 						{
-							
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bqStyle,2,0 ,1,12));
+							sheet.getRow(nrow).getCell(cc).setCellStyle(plateStyle);
 						}
-						
 						//填充Plate layout
 						tcell.setCellValue("Plate layout:"+list.get(listn).getPlate());
-						trow.setHeight((short) (14.3*20));
+						trow.setHeight((short) (17.5*20));
+						if(cc==cols){
+						sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
 						}
+						}
+					
+					//设置plate下空行
+					if(topjjrow>0 && rr==topjjrow && cc==cols){
+						sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
+						trow.setHeight((short) (12.75*20));
+					}
 					
 					//设置标题顶端行格式
 					if(rr==topjjrow && topjjrow>0){
-						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,bq1Style,2,0 ,1,12));
+						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonta,book.createCellStyle(),2,0 ,1,12));
 					}
-					
+					//设置列标题
 					if(rr==topjjrow+1){	
 						//填充列标题
 						trow.setHeight((short) (19.5*20));
@@ -182,15 +177,14 @@ public class ExcelServices {
 						//设置列标题格式
 						if(cc<cols){
 						 //列标题除最后一个格式
-						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btaStyle,0,2 ,1,10));
+						sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, book.createCellStyle(),0,2 ,1,10));
 						}
 						else
 						{
 						 //列标题最后一个格式
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, btbStyle,4,2 ,1,10));
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, book.createCellStyle(),4,2 ,1,10));
 						}
 					}
-					
 					if(rr>topjjrow+1){
 						//设置行标题
 						if(cc==0){
@@ -199,152 +193,78 @@ public class ExcelServices {
 							sheet.addMergedRegion(new CellRangeAddress(nrow,nrow+1,0,0));
 							tcell.setCellValue(rowxl.substring((rr-jrr)/2, (rr-jrr)/2+1));
 							}
-							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, rowbtStyle,4,2 ,1,10));
+							sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontb, book.createCellStyle(),4,2 ,1,10));
 						 
 						}else{
-							
-							
-								if((rr-jrr)%2>0 && (rr-jrr>=tmar*2+1) && rr-jrr<(rows)*2-bmar*2 ){
-									if(cc>lmar && cc<cols-rmar+1 && cc!=mv && listn<list.size()){
+							if((rr-jrr)%2>0 ){
+
+										String cas=list.get(listn).getCAS().trim();
+										String compound=list.get(listn).getCompound();
+												
 										//填充CAS
-										sheet.getRow(nrow-1).getCell(cc).setCellValue(list.get(listn).getCAS()); 
+										sheet.getRow(nrow-1).getCell(cc).setCellValue(cas); 
 										
 										//填充Compound
-										sheet.getRow(nrow).getCell(cc).setCellValue(list.get(listn).getCompound());
-										
-										listn++;
-									}
-									
-									
-								if((cc<cols-rmar||rmar==0)&& cc!=mv){
-								//设置CAS格式									
-									if(rr-jrr==(tmar)*2+1 && tmar>0){
-										//EMPYT下一行的首行
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjeStyle,10,2 ,1,8));
-									}else
-									{
-										//非EMPYT下一行的首行
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjaStyle,6,2 ,1,8));
-									}	
-								
-								//设置Compund格式
-								  if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
-										//EMPYT下一行的首行
-									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjfStyle,11,2 ,0,7));
-								  }else
-								  {
-										//EMPYT下一行的首行
-									  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjbStyle,7,2 ,0,7));
-								  }
-								}
-								else
-								{
-								
-								
-								    //设置最右侧首列CAS样式
-									if(rr-jrr==(tmar)*2+1 && tmar>0){
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjgStyle,14,2 ,1,8));
-									}else{
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fonte,sjcStyle,1,2 ,1,8));
-									}
-								
-									
-									//设置最右侧首列Compund样式
-									 if(rr-jrr==(rows)*2-bmar*2-1 && bmar>0){
-										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjhStyle,15,2 ,0,7));
-									 }else
-									 {
-										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontf,sjdStyle,2,2 ,0,7));
-									 }
-									
-								}
-								}
-								
-							//填充empty
-							if(cc<=lmar ||cc>=cols-rmar+1|| cc==mv){
-								//璁剧疆杈硅窛鍒楀
-								sheet.setColumnWidth(cc, (int)8.38*252+323);
-								tcell.setCellValue("Empty");
-								
-								
-								 if((rr-jrr)%2>0 ){
-								 
-									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
-									 
-									
-									//设置empty右虚线
-									 if(cc==lmar  || (cc==mv && mv>0) ){
-										if(cc==lmar){
-										 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
-										 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyaStyle,8,2 ,0,8));
+										sheet.getRow(nrow).getCell(cc).setCellValue(compound);
+					
+										//EMPTY格式
+										if(cas=="Empty"){
+											 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
+											 if(cc==1 ){
+												 if(listn+1<list.size()&&list.get(listn+1).getCAS().trim().equals("Empty"))
+												 {
+													 sheet.getRow(nrow-1).getCell(cc).setCellStyle(empty4_cs);
+													 sheet.getRow(nrow).getCell(cc).setCellStyle(empty4_cs);
+												 }else{
+													 sheet.getRow(nrow-1).getCell(cc).setCellStyle(empty1_cs);
+													 sheet.getRow(nrow).getCell(cc).setCellStyle(empty1_cs);
+												 }
+											 
+											 }else if(cc==cols){
+												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(empty2_cs);
+												 sheet.getRow(nrow).getCell(cc).setCellStyle(empty2_cs);
+
+											 }else if(listn+1<list.size() && list.get(listn+1).getCAS().trim().equals("Empty")){
+												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(empty4_cs);
+												 sheet.getRow(nrow).getCell(cc).setCellStyle(empty4_cs);
+												 
+											 }else{
+												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(empty3_cs);
+												 sheet.getRow(nrow).getCell(cc).setCellStyle(empty3_cs);
+											 }
+											 
+
+										}	
+										//非EMPTY格式
+										else{
+											sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
+											 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
+											 
+											 if(list.get(listn-1).getCAS().trim().equals("Empty")){
+
+												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
+												 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
+											 }
+											 if(list.get(listn+1).getCAS().trim().equals("Empty")){
+
+												 sheet.getRow(nrow-1).getCell(cc).setCellStyle(data1_cs1);
+												 sheet.getRow(nrow).getCell(cc).setCellStyle(data1_cs2);
+											 }
+											 	
+											 sheet.setColumnWidth(cc, (int)11.5*252+323);
 										}
-										if(cc==mv && mv>0 ){
-											System.out.println("cc:"+cc+",nrow:"+nrow);
-											 sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptygStyle,16,2 ,0,8));
-											 sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptygStyle,16,2 ,0,8));
-										 }
-									 }else if(cc==cols-rmar+1){
-										//设置最右边格式
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 , 0,8));
-										sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptybStyle,9,2 ,0,8));
-									 }else
-									 {
-									
-										sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
-										sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
-									 }
-									 
-									 
-									 nomarg=true;
-								
-								 }
-								
-							}else{
-								//璁剧疆鏁版嵁鍒楀
-								sheet.setColumnWidth(cc, 11*252+323);
+										
+										if(listn<zzrow-1){
+											listn++;
+										}
+										
+
 							}
 							
-							
-							//璁剧疆琛岃竟璺�
-							if(rr-jrr<tmar*2||rr-jrr>=(rows)*2-bmar*2){
-								 tcell.setCellValue("Empty");
-								 if((rr-jrr)%2>0){
-									 if(nomarg==false){
-									 sheet.addMergedRegion(new CellRangeAddress(nrow-1,nrow,cc,cc));
-									 }
-									 
-									 //璁剧疆琛岃竟璺濇牸寮�
-									  if(rr-jrr<=tmar*2-1||rr-jrr>=(rows)*2-bmar*2+1){
-									  if(rr-jrr==(rows)*2-bmar*2+1 && bmar>0){
-									   sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptydStyle,13,2 ,0,8));
-									  }else
-									  {
-								      sheet.getRow(nrow-1).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 , 0,8));
-									  }
-								      if(rr-jrr==tmar*2-1 && tmar>0){
-										  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptyeStyle,12,2 ,0,8));
-									  }else
-									  { 
-										  sheet.getRow(nrow).getCell(cc).setCellStyle(ExcelUtils.excelStyle(fontd,emptycStyle,5,2 ,0,8));
-									  }
-								    
-									 
-										 
-									  }
-									 
-								 }
-							 }
 						}
 					}	
 				}
-				if(rr==0){
-					sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
-				}
-				if(topjjrow>0 && rr>=topjjrow &rr<=topjjrow){
-					sheet.addMergedRegion(new CellRangeAddress(nrow,nrow,0,cols));
-					
-					trow.setHeight((short) (12.75*20));
-				}
+			
 				
 					
 			}
@@ -352,7 +272,8 @@ public class ExcelServices {
 		}
 		
 		
-		//淇濆瓨鏁版嵁
+		
+		//保存文件
 		
 		String filename=String.valueOf(System.currentTimeMillis())+".xlsx";
 		FileOutputStream out=null;
@@ -379,6 +300,7 @@ public class ExcelServices {
 		
 	
 	}
+
 	
 	public void download(String file,HttpServletResponse response,HttpServletRequest request,ServletContext con) throws IOException{
 

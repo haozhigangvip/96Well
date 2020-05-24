@@ -1,14 +1,26 @@
 package cn.hzg.pojo;
 
 public class plate {
-@Override
-	public String toString() {
-		return "plate [CAS=" + CAS + ", Compound=" + Compound + ", Plate="
-				+ Plate + "]";
-	}
+
 private String CAS;
 private String Compound;
 private String Plate;
+private String Row;
+private String Col;
+
+
+public String getRow() {
+	return Row;
+}
+public void setRow(String row) {
+	Row = row;
+}
+public String getCol() {
+	return Col;
+}
+public void setCol(String col) {
+	Col = col;
+}
 public String getCAS() {
 	return CAS;
 }
@@ -26,6 +38,10 @@ public String getPlate() {
 }
 public void setPlate(String plate) {
 	Plate = plate;
+}
+@Override
+public String toString() {
+	return "plate [CAS=" + CAS + ", Compound=" + Compound + ", Plate=" + Plate + ", Row=" + Row + ", Col=" + Col + "]";
 }
 	
 

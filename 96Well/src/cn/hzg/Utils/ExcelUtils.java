@@ -18,22 +18,26 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import cn.hzg.pojo.DataInfo;
 import cn.hzg.pojo.plate;
 
 
 public class ExcelUtils {
 
-public List<plate> excelToList(String filePath) throws EncryptedDocumentException, InvalidFormatException
+public DataInfo  excelToList(String filePath,DataInfo df) throws EncryptedDocumentException, InvalidFormatException
 {
 
 	Workbook book=null;
 	Sheet sheet=null;
-
+	int trows=df.getRows();
+	int tcols=df.getCols();
 	Row row=null;
 
 	
 	List<plate> list=new ArrayList<plate>();
-	int rows=0;
+	
+	
 	try {
 		
 
@@ -51,13 +55,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		return null;
 	} 
 	if(book!=null){
-	
-		
-		
-		
 		sheet=book.getSheetAt(0);
-		
-		
 		if(sheet==null){
 			try {
 				book.close();
@@ -68,39 +66,83 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 			return null;
 			
 		}
-		rows=sheet.getLastRowNum();
-		
-		//System.out.println(rows);
-		for(int rownum=1;rownum<=rows;rownum++){
-			plate pl=new plate();
-			row=sheet.getRow(rownum);
-			if(row!=null){
-                Cell deliveryTimeCell =row.getCell(0);
-                System.out.println(deliveryTimeCell.getCellTypeEnum());
-                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC ){
-                	if(HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
-                		pl.setCAS((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
-                	}else
-                	{
-                		DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
+		int rows=sheet.getLastRowNum();//上传文件列表总行数
+		int rr=1; //上传文件列表遍历当前行
+		String rowname=null;//上传文件所在行
+		int  colnum =0; //上传文件所在列
+		String cas =null;
+		String compound =null;
+		String plate=null ;
+		String rowarr="abcdefghijklmnopqrstuvwxyz";
+		String nrowname=null;
+		int ncolnum=0;
+		int round=0;
 
-                		pl.setCAS(decimalFormat.format(row.getCell(0).getNumericCellValue()).toString());
-                	}
-                	
-                }else{
-                	pl.setCAS(row.getCell(0).getStringCellValue());
-                }
+		while (rr<=rows){
+			round++;
+			for(int arr=1;arr<=trows;arr++){
+				for(int acc=1; acc<=tcols;acc++){
+					row=sheet.getRow(rr);
+					//计算当前遍历行标签
+					nrowname=rowarr.substring(arr-1,arr);
 
-				
-				pl.setCompound(row.getCell(1).getStringCellValue());
-				pl.setPlate(row.getCell(2).getStringCellValue());
+					if(row!=null){
+						//获取列标签
+						colnum=(int)row.getCell(4).getNumericCellValue();
+						//获取行标签
+						rowname=row.getCell(3).getStringCellValue().trim();
+												
+						
+						//判断是否为EMPTY
+						if(rowname.equalsIgnoreCase(nrowname) && colnum==acc ){
+							//获取CAS判断CAS数据类型，并校正为字符型
+							Cell deliveryTimeCell =row.getCell(0);
+			                if(deliveryTimeCell.getCellTypeEnum()== CellType.NUMERIC ){
+			                	if(HSSFDateUtil.isCellDateFormatted(deliveryTimeCell)){
+			                		cas=((row.getCell(0).getDateCellValue()).toLocaleString().replace("0:00:00", "").trim());
+			                	}else
+			                	{
+			                		DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
+			                		cas=(decimalFormat.format(row.getCell(0).getNumericCellValue()).toString());
+			                	}
+			                }else{
+			                		cas=(row.getCell(0).getStringCellValue());
+			                	}
 
-				list.add(pl);
-
-			}
+							//获取Compound
+			                compound=row.getCell(1).getStringCellValue();
+			                //获取Plate
+							plate=row.getCell(2).getStringCellValue();
 			
-		} 	
-	 
+							rr++;	
+						}else{
+							cas="Empty";
+							compound=null;
+							plate=row.getCell(2).getStringCellValue().trim();
+						
+						}
+						
+					}else{
+						cas="Empty";
+						compound=null;
+						plate=null;
+						rr++;
+					}
+					plate pl=new plate();
+					pl.setCAS(cas);
+					pl.setCompound(compound);
+					pl.setPlate(plate);
+					pl.setRow(nrowname);
+					pl.setCol(String.valueOf(acc));
+					list.add(pl);
+
+				}
+			}
+		}
+		df.setRounds(round);
+		df.setList(list);
+		
+		
 	}
 	try {
 		book.close();
@@ -110,7 +152,7 @@ public List<plate> excelToList(String filePath) throws EncryptedDocumentExceptio
 		e.printStackTrace();
 	}
 	
-	return list;
+	return df;
 }
 
 public XSSFWorkbook getXLSXBook(String filePath ){

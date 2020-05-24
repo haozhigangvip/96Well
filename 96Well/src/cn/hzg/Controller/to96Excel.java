@@ -23,29 +23,21 @@ public class to96Excel {
 		String message="";
 		List<plate> list=null;
 		ExcelServices Excel=new ExcelServices();
-		list=Excel.readExcel(file,savePath);	
-		
-		if(list==null){
+		df=Excel.readExcel(file,savePath,df);	
+		if(df==null){
 			message="status: 0";
 		}else
 		{
 			
-			df.setList(list);
+			String newfile=Excel.toExcel(request,df);
 			String cookstr="{\"prows\":"+df.getRows()+
 					",\"pcols\":"+df.getCols()+
-					",\"margin_left\":"+df.getMargin_left()+
-					",\"margin_right\":"+df.getMargin_right()+
-					",\"margin_top\":"+df.getMargin_top()+
-					",\"margin_butto\":"+df.getMargin_butto()+
 					"}";
 			String encodeCookie = URLEncoder.encode(cookstr,"UTF-8");
 			Cookie ck=new Cookie("96wellCookie", encodeCookie);
 			ck.setMaxAge(31104000);
 			ck.setPath(request.getContextPath()+"/");
-			System.out.println(request.getContextPath());
-			
 			response.addCookie(ck);
-			String newfile=Excel.toExcel(request,df);
 			message="\"status\": 1,\"url\":\""+request.getContextPath()+"/download/"+newfile+"\"";
 
 		}
